@@ -1,0 +1,6 @@
+{
+  "name": "TranspoDrive - Gestión de Transporte y Encomiendas",
+  "description": "Sistema empresarial móvil y web para transporte pesado, manifiestos MIC, cobranzas en destino, gastos de ruta diésel y arqueo de cajas sincronizado con Google Sheets y Google Drive.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <script>
+      // Compatibility shim for extensions intercepting window.fetch
+      (function() {
+        try {
+          var _fetch = window.fetch ? window.fetch.bind(window) : undefined;
+          var getter = function() { return _fetch; };
+          var setter = function(fn) { _fetch = fn; };
+
+          try {
+            Object.defineProperty(window, 'fetch', {
+              get: getter,
+              set: setter,
+              configurable: true,
+              enumerable: true
+            });
+          } catch (e) {}
+
+          try {
+            if (typeof Window !== 'undefined' && Window.prototype) {
+              Object.defineProperty(Window.prototype, 'fetch', {
+                get: getter,
+                set: setter,
+                configurable: true,
+                enumerable: true
+              });
+            }
+          } catch (e) {}
+
+          try {
+            if (typeof globalThis !== 'undefined' && globalThis !== window) {
+              Object.defineProperty(globalThis, 'fetch', {
+                get: getter,
+                set: setter,
+                configurable: true,
+                enumerable: true
+              });
+            }
+          } catch (e) {}
+        } catch (err) {}
+      })();
+    </script>
+    <title>TranspoDrive - Gestión de Transporte y Encomiendas</title>
+    <meta name="description" content="Sistema empresarial móvil y web para transporte pesado, manifiestos MIC, cobranzas en destino, gastos de ruta diésel y arqueo de cajas sincronizado con Google Sheets y Google Drive." />
+    <meta property="og:title" content="TranspoDrive - Gestión de Transporte y Encomiendas" />
+    <meta property="og:description" content="Sistema empresarial móvil y web para transporte pesado, manifiestos MIC, cobranzas en destino, gastos de ruta diésel y arqueo de cajas sincronizado con Google Sheets y Google Drive." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#1d4ed8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-[#f4f6fa] text-slate-800 antialiased font-sans selection:bg-blue-600 selection:text-white">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

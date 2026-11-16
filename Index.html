@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TranspoDrive - Gestión de Transporte y Encomiendas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1d4ed8;
+      --primary-hover: #1e40af;
+      --slate-900: #0f172a;
+      --slate-800: #1e293b;
+      --slate-700: #334155;
+      --slate-600: #475569;
+      --slate-500: #64748b;
+      --slate-200: #e2e8f0;
+      --slate-100: #f1f5f9;
+      --slate-50: #f8fafc;
+      --emerald-600: #059669;
+      --rose-600: #dc2626;
+      --amber-500: #f59e0b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: #0f172a;
+      color: #fff;
+      padding: 14px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-box {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: #1d4ed8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(29, 78, 216, 0.4);
+    }
+
+    .brand-title {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 9999px;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: #10b981;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.9); }
+    }
+
+    .btn-external {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #2563eb;
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-external:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+    }
+
+    /* Tabs Bar */
+    .tabs-bar {
+      background: #fff;
+      border-bottom: 1px solid var(--slate-200);
+      display: flex;
+      overflow-x: auto;
+      padding: 0 16px;
+      gap: 8px;
+    }
+
+    .tab-btn {
+      padding: 14px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--slate-500);
+      border: none;
+      background: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: all 0.15s ease-in-out;
+    }
+
+    .tab-btn:hover {
+      color: var(--primary);
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    main {
+      flex: 1;
+      padding: 24px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Cards */
+    .card {
+      background: #fff;
+      border: 1px solid var(--slate-200);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--slate-800);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--slate-500);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-box {
+      background: #f8fafc;
+      border: 1px solid var(--slate-200);
+      border-radius: 10px;
+      padding: 16px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--slate-500);
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--slate-900);
+    }
+
+    /* Grid Buttons */
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .action-card {
+      border: 1px solid var(--slate-200);
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+      background: #fff;
+      transition: all 0.2s;
+    }
+
+    .action-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(29, 78, 216, 0.08);
+    }
+
+    .action-info h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--slate-800);
+      margin-bottom: 4px;
+    }
+
+    .action-info p {
+      font-size: 12px;
+      color: var(--slate-500);
+      line-height: 1.4;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 100%;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background: var(--slate-100);
+      color: var(--slate-700);
+      border: 1px solid var(--slate-200);
+    }
+
+    .btn-secondary:hover {
+      background: var(--slate-200);
+    }
+
+    .btn-danger {
+      background: #fee2e2;
+      color: var(--rose-600);
+      border: 1px solid #fca5a5;
+    }
+
+    .btn-danger:hover {
+      background: var(--rose-600);
+      color: #fff;
+    }
+
+    /* Forms */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--slate-700);
+      margin-bottom: 6px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--slate-200);
+      font-size: 13px;
+      font-family: inherit;
+      color: var(--slate-900);
+      background: #fff;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* Table */
+    .table-container {
+      overflow-x: auto;
+      border: 1px solid var(--slate-200);
+      border-radius: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    th {
+      background: #f8fafc;
+      padding: 12px 14px;
+      font-weight: 700;
+      color: var(--slate-600);
+      border-bottom: 1px solid var(--slate-200);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--slate-100);
+      color: var(--slate-800);
+      white-space: nowrap;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .tabular-nums {
+      font-family: 'JetBrains Mono', monospace;
+      text-align: right;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .badge-blue { background: #dbeafe; color: #1e40af; }
+    .badge-green { background: #d1fae5; color: #065f46; }
+    .badge-amber { background: #fef3c7; color: #92400e; }
+    .badge-red { background: #fee2e2; color: #991b1b; }
+
+    /* Console / Logs */
+    .console-box {
+      background: #0f172a;
+      color: #38bdf8;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      max-height: 200px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      line-height: 1.5;
+      margin-top: 16px;
+      display: none;
+    }
+
+    /* Alert Banner */
+    .banner {
+      background: #eff6ff;
+      border-left: 4px solid var(--primary);
+      padding: 16px;
+      border-radius: 6px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .banner p {
+      font-size: 13px;
+      color: #1e3a8a;
+      line-height: 1.5;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0f172a;
+      color: #fff;
+      padding: 14px 20px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      display: none;
+      z-index: 100;
+    }
+
+    @media (max-width: 768px) {
+      .form-grid-2, .form-grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER NATIVO -->
+  <header>
+    <div class="brand">
+      <div class="logo-box">TD</div>
+      <div>
+        <div class="brand-title">TranspoDrive</div>
+        <div class="brand-sub">Gestión de Transporte y Encomiendas (Google Sheets Native)</div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <div class="badge-status">
+        <span class="dot"></span>
+        <span>Base de Datos Conectada</span>
+      </div>
+      <a
+        href="https://aistudio.google.com/apps/8c949fee-985a-4dc8-b206-e1d35e2270fa?showAssistant=true&showPreview=true&fullscreenApplet=true"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-external"
+      >
+        <span>Abrir App Completa (AI Studio)</span>
+        <span>↗</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- PESTAÑAS DE NAVEGACIÓN -->
+  <nav class="tabs-bar">
+    <button class="tab-btn active" onclick="switchTab('tablas')">
+      <span>📊</span>
+      <span>Base de Datos en Vivo</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('despacho')">
+      <span>📦</span>
+      <span>Crear Despacho (MIC)</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('cobranza')">
+      <span>💵</span>
+      <span>Cobranzas en Destino</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('auditoria')">
+      <span>🛠️</span>
+      <span>Auditoría & Saldos</span>
+    </button>
+  </nav>
+
+  <main>
+    <!-- BANNER DE ENLACE RÁPIDO -->
+    <div class="banner">
+      <div>
+        <strong style="color: #1e40af; font-size: 14px;">Portal Nativo de TranspoDrive en Google Apps Script</strong>
+        <p>
+          Este panel opera directamente sobre tu Google Sheet mediante <code>google.script.run</code>. No requiere servidores externos ni cookies.
+        </p>
+      </div>
+      <a
+        href="https://aistudio.google.com/apps/8c949fee-985a-4dc8-b206-e1d35e2270fa?showAssistant=true&showPreview=true&fullscreenApplet=true"
+        target="_blank"
+        class="btn-external"
+        style="padding: 10px 18px; font-size: 13px;"
+      >
+        <span>🚀 Abrir Versión Completa Cloud</span>
+        <span>↗</span>
+      </a>
+    </div>
+
+    <!-- PESTAÑA 1: BASE DE DATOS EN VIVO -->
+    <div id="tab-tablas" class="tab-content active">
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <div>
+            <h3 class="card-title">📊 Resumen de Registros en Google Sheets</h3>
+            <p class="card-desc" style="margin-bottom: 0;">Consulta el volumen de registros en tiempo real sincronizado con tu hoja.</p>
+          </div>
+          <button class="btn btn-secondary" style="width: auto;" onclick="cargarResumenTablas()">
+            <span>🔄 Refrescar Datos</span>
+          </button>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-label">Viajes Registrados</div>
+            <div class="stat-value" id="count-viajes">--</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Manifiestos Origen</div>
+            <div class="stat-value" id="count-origen">--</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Sub-Manifiestos Destino</div>
+            <div class="stat-value" id="count-destino">--</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Transacciones Diarias</div>
+            <div class="stat-value" id="count-transacciones">--</div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Hoja de Cálculo</th>
+                <th style="text-align: right;">N° Filas Operativas</th>
+                <th>Estado de Integridad</th>
+                <th>Acción Rápida</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-tablas">
+              <tr>
+                <td colspan="4" style="text-align: center; color: var(--slate-500); padding: 24px;">
+                  Cargando resumen de tablas desde Google Sheets...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PESTAÑA 2: CREAR DESPACHO (MIC) -->
+    <div id="tab-despacho" class="tab-content">
+      <div class="card">
+        <h3 class="card-title">📦 Registro de Despacho MIC con Saldos Separados</h3>
+        <p class="card-desc">
+          Registra un nuevo Manifiesto de Origen y sus Sub-Manifiestos separando de forma independiente lo Pagado en Origen y el Saldo por Pagar (Cliente vs Agencia).
+        </p>
+
+        <form id="form-despacho" onsubmit="guardarDespachoForm(event)">
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label class="form-label">N° Manifiesto MIC *</label>
+              <input type="text" id="mic-nro" class="form-control" placeholder="Ej: MIC-2026-001" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">ID / Placa de Viaje *</label>
+              <input type="text" id="mic-viaje" class="form-control" placeholder="Ej: VIAJE-123 o 1234-XYZ" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Sucursal de Origen *</label>
+              <select id="mic-origen" class="form-control">
+                <option value="Santa Cruz">Santa Cruz</option>
+                <option value="La Paz">La Paz</option>
+                <option value="Cochabamba">Cochabamba</option>
+                <option value="Oruro">Oruro</option>
+                <option value="Potosi">Potosí</option>
+                <option value="Sucre">Sucre</option>
+                <option value="Tarija">Tarija</option>
+                <option value="Beni">Beni</option>
+                <option value="Pando">Pando</option>
+              </select>
+            </div>
+          </div>
+
+          <h4 style="font-size: 14px; font-weight: 700; color: var(--slate-800); margin: 16px 0 8px;">Sub-Manifiesto de Destino</h4>
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label class="form-label">N° Sub-Manifiesto *</label>
+              <input type="text" id="sub-nro" class="form-control" placeholder="Ej: SUB-001" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Sucursal de Destino *</label>
+              <select id="sub-destino" class="form-control">
+                <option value="La Paz">La Paz</option>
+                <option value="Cochabamba">Cochabamba</option>
+                <option value="Santa Cruz">Santa Cruz</option>
+                <option value="Oruro">Oruro</option>
+                <option value="Sucre">Sucre</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Destinatario / Entidad Responsable *</label>
+              <input type="text" id="sub-destinatario" class="form-control" placeholder="Nombre de Cliente o Agencia" required>
+            </div>
+          </div>
+
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label class="form-label">Pagado en Origen (Bs.)</label>
+              <input type="number" id="sub-pagado-origen" class="form-control" value="0" min="0" step="0.01" oninput="calcularTotalFlete()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Por Pagar en Destino (Bs.)</label>
+              <input type="number" id="sub-por-pagar" class="form-control" value="0" min="0" step="0.01" oninput="calcularTotalFlete()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Flete Total Asignado (Bs.)</label>
+              <input type="number" id="sub-flete-total" class="form-control" value="0" readonly style="background: #f1f5f9; font-weight: bold;">
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label">¿Quién debe rendir el saldo por cobrar?</label>
+              <select id="sub-responsable" class="form-control">
+                <option value="Cliente">👤 Cliente Final (Saldo Pendiente Cliente)</option>
+                <option value="Agencia">🏢 Agencia / Sucursal (Saldo Pendiente Agencia)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Detalle de la Carga</label>
+              <input type="text" id="sub-carga" class="form-control" placeholder="Ej: 3 cajas repuestos, 1 bulto">
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="margin-top: 12px; width: auto; min-width: 200px;">
+            <span>💾 Guardar Despacho en Google Sheets</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- PESTAÑA 3: COBRANZAS EN DESTINO -->
+    <div id="tab-cobranza" class="tab-content">
+      <div class="card">
+        <h3 class="card-title">💵 Registro de Cobranza en Destino</h3>
+        <p class="card-desc">
+          Registra el cobro de un sub-manifiesto, amortiza automáticamente el saldo del cliente o agencia, y alimenta la caja de recaudación.
+        </p>
+
+        <form id="form-cobro" onsubmit="guardarCobranzaForm(event)">
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label class="form-label">ID o N° Sub-Manifiesto *</label>
+              <input type="text" id="cobro-sub-id" class="form-control" placeholder="Ej: SUB-001" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Monto a Cobrar (Bs.) *</label>
+              <input type="number" id="cobro-monto" class="form-control" placeholder="0.00" min="0.01" step="0.01" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Caja / Cuenta Destino *</label>
+              <select id="cobro-caja" class="form-control">
+                <option value="Caja Agencia La Paz">Caja Agencia La Paz</option>
+                <option value="Caja Agencia Cochabamba">Caja Agencia Cochabamba</option>
+                <option value="Caja Agencia Santa Cruz">Caja Agencia Santa Cruz</option>
+                <option value="Caja Central">Caja Central</option>
+                <option value="Banco Central">Banco Central</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label">Tipo de Responsable a Amortizar</label>
+              <select id="cobro-tipo-responsable" class="form-control">
+                <option value="Cliente">👤 Saldo Cliente Final</option>
+                <option value="Agencia">🏢 Saldo Agencia / Sucursal</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">N° de Recibo / Comprobante</label>
+              <input type="text" id="cobro-recibo" class="form-control" placeholder="Ej: REC-4920">
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="margin-top: 12px; width: auto; min-width: 200px;">
+            <span>💰 Registrar Cobro y Liquidar Saldo</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- PESTAÑA 4: AUDITORÍA & CONSISTENCIA -->
+    <div id="tab-auditoria" class="tab-content">
+      <div class="card">
+        <h3 class="card-title">🛡️ Diagnóstico y Reparación Integral</h3>
+        <p class="card-desc">
+          Supervisa el estado contable y elimina inconsistencias, registros huérfanos o desfases entre fletes y saldos por cobrar.
+        </p>
+
+        <div class="actions-grid">
+          <div class="action-card">
+            <div class="action-info">
+              <h4>1. Auditoría y Reparación Total</h4>
+              <p>Purga registros huérfanos sin viaje válido, sincroniza saldos de CxC en manifiestos de destino y recalcula cuentas por pagar.</p>
+            </div>
+            <button class="btn btn-primary" onclick="ejecutarAccionGas('ejecutarAuditoriaYReparacionTotal')">
+              <span>▶️ Ejecutar Auditoría Completa</span>
+            </button>
+          </div>
+
+          <div class="action-card">
+            <div class="action-info">
+              <h4>2. Recalcular Saldos Sub-Manifiestos</h4>
+              <p>Actualiza la fórmula de cada sub-manifiesto (Flete = Pagado Origen + Por Pagar Destino) separando saldos para Cliente y Agencia.</p>
+            </div>
+            <button class="btn btn-secondary" onclick="ejecutarAccionGas('recalcularSaldosSubManifiestos')">
+              <span>🔄 Recalcular Todos los Saldos</span>
+            </button>
+          </div>
+
+          <div class="action-card">
+            <div class="action-info">
+              <h4>3. Inicializar / Actualizar Estructura</h4>
+              <p>Crea las hojas contables faltantes y añade columnas nuevas sin alterar datos existentes.</p>
+            </div>
+            <button class="btn btn-secondary" onclick="ejecutarAccionGas('inicializarEstructuraBaseDatos')">
+              <span>📊 Verificar Tablas y Columnas</span>
+            </button>
+          </div>
+
+          <div class="action-card">
+            <div class="action-info">
+              <h4>4. Respaldo Inmediato en Google Drive</h4>
+              <p>Genera una instantánea completa en formato JSON con fecha y hora dentro de tu carpeta en Google Drive.</p>
+            </div>
+            <button class="btn btn-secondary" onclick="ejecutarAccionGas('crearBackupEnDrive')">
+              <span>💾 Crear Copia de Seguridad</span>
+            </button>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px; padding-top: 16px; border-top: 1px dashed var(--slate-200);">
+          <div class="action-card" style="border-color: #fecaca; background: #fff5f5;">
+            <div class="action-info">
+              <h4 style="color: var(--rose-600);">⚠️ Zona de Peligro: Limpiar Sistema a Cero</h4>
+              <p>Vacía completamente viajes, transacciones, manifiestos y gastos, restableciendo los saldos de todas las cajas a 0.</p>
+            </div>
+            <button class="btn btn-danger" onclick="confirmarLimpiezaTotal()">
+              <span>🗑️ Vaciar Sistema Absolutamente a Cero</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="console-auditoria" class="console-box"></div>
+      </div>
+    </div>
+  </main>
+
+  <div id="toast">Operación ejecutada con éxito</div>
+
+  <script>
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+      const targetBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
+      if (targetBtn) targetBtn.classList.add('active');
+
+      const targetContent = document.getElementById('tab-' + tabId);
+      if (targetContent) targetContent.classList.add('active');
+
+      if (tabId === 'tablas') {
+        cargarResumenTablas();
+      }
+    }
+
+    function mostrarToast(mensaje, esError = false) {
+      const toast = document.getElementById('toast');
+      toast.innerText = mensaje;
+      toast.style.background = esError ? '#dc2626' : '#0f172a';
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 4000);
+    }
+
+    function logConsola(msg) {
+      const c = document.getElementById('console-auditoria');
+      c.style.display = 'block';
+      const timestamp = new Date().toLocaleTimeString();
+      c.innerHTML += `[${timestamp}] ${msg}\n`;
+      c.scrollTop = c.scrollHeight;
+    }
+
+    function calcularTotalFlete() {
+      const pagado = parseFloat(document.getElementById('sub-pagado-origen').value) || 0;
+      const porPagar = parseFloat(document.getElementById('sub-por-pagar').value) || 0;
+      document.getElementById('sub-flete-total').value = (pagado + porPagar).toFixed(2);
+    }
+
+    function ejecutarAccionGas(nombreAccion) {
+      logConsola(`Iniciando acción: ${nombreAccion}...`);
+      mostrarToast(`Ejecutando ${nombreAccion}...`);
+
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        if (nombreAccion === 'ejecutarAuditoriaYReparacionTotal') {
+          google.script.run
+            .withSuccessHandler(res => {
+              logConsola(`Resultado: ${JSON.stringify(res, null, 2)}`);
+              mostrarToast(res.message || 'Auditoría completada exitosamente.');
+            })
+            .withFailureHandler(err => {
+              logConsola(`Error: ${err}`);
+              mostrarToast('Error al ejecutar: ' + err, true);
+            })
+            .ejecutarAuditoriaYReparacionTotal();
+        } else if (nombreAccion === 'recalcularSaldosSubManifiestos') {
+          google.script.run
+            .withSuccessHandler(res => {
+              logConsola(`Resultado: ${JSON.stringify(res, null, 2)}`);
+              mostrarToast(res.message || 'Saldos recalculados con éxito.');
+            })
+            .withFailureHandler(err => {
+              logConsola(`Error: ${err}`);
+              mostrarToast('Error al ejecutar: ' + err, true);
+            })
+            .recalcularSaldosSubManifiestos();
+        } else if (nombreAccion === 'inicializarEstructuraBaseDatos') {
+          google.script.run
+            .withSuccessHandler(res => {
+              logConsola(`Resultado: ${res}`);
+              mostrarToast(res || 'Estructura inicializada correctamente.');
+            })
+            .withFailureHandler(err => {
+              logConsola(`Error: ${err}`);
+              mostrarToast('Error: ' + err, true);
+            })
+            .inicializarEstructuraBaseDatos();
+        } else if (nombreAccion === 'crearBackupEnDrive') {
+          google.script.run
+            .withSuccessHandler(res => {
+              logConsola(`Resultado: ${JSON.stringify(res, null, 2)}`);
+              mostrarToast(res.message || 'Respaldo generado con éxito en Drive.');
+            })
+            .withFailureHandler(err => {
+              logConsola(`Error: ${err}`);
+              mostrarToast('Error: ' + err, true);
+            })
+            .crearBackupEnDrive();
+        } else if (nombreAccion === 'limpiarSistemaAbsolutamenteTodoACero') {
+          google.script.run
+            .withSuccessHandler(res => {
+              logConsola(`Resultado: ${JSON.stringify(res, null, 2)}`);
+              mostrarToast(res.message || 'Sistema limpiado a 0.');
+            })
+            .withFailureHandler(err => {
+              logConsola(`Error: ${err}`);
+              mostrarToast('Error: ' + err, true);
+            })
+            .limpiarSistemaAbsolutamenteTodoACero();
+        }
+      }
+    }
+
+    function confirmarLimpiezaTotal() {
+      const resp = confirm('⚠️ ADVERTENCIA CRÍTICA:\n¿Estás seguro de que deseas vaciar TODOS los viajes, transacciones, manifiestos y poner todas las cajas a 0?\n\nEsta acción no se puede deshacer.');
+      if (resp) {
+        ejecutarAccionGas('limpiarSistemaAbsolutamenteTodoACero');
+      }
+    }
+
+    function guardarDespachoForm(e) {
+      e.preventDefault();
+      const nroMic = document.getElementById('mic-nro').value.trim();
+      const viaje = document.getElementById('mic-viaje').value.trim();
+      const origen = document.getElementById('mic-origen').value;
+      const subNro = document.getElementById('sub-nro').value.trim();
+      const destino = document.getElementById('sub-destino').value;
+      const destinatario = document.getElementById('sub-destinatario').value.trim();
+      const pagadoOrigen = parseFloat(document.getElementById('sub-pagado-origen').value) || 0;
+      const porPagarDestino = parseFloat(document.getElementById('sub-por-pagar').value) || 0;
+      const fleteTotal = pagadoOrigen + porPagarDestino;
+      const tipoResponsable = document.getElementById('sub-responsable').value;
+      const detalleCarga = document.getElementById('sub-carga').value.trim();
+
+      const payload = {
+        manifiestoOrigen: {
+          idManifiesto: 'MAN-' + Date.now(),
+          nroManifiestoMIC: nroMic,
+          idViajeAsignado: viaje,
+          sucursalOrigen: origen,
+          fechaEmision: new Date().toISOString().split('T')[0],
+          fleteTotalBs: fleteTotal,
+          cobradoOrigenBs: pagadoOrigen,
+          saldoCobrarDestinosBs: porPagarDestino
+        },
+        subManifiestos: [
+          {
+            idSubManifiesto: 'SUB-' + Date.now(),
+            idManifiestoPadre: 'MAN-' + Date.now(),
+            nroManifiesto: subNro,
+            sucursalDestino: destino,
+            destinatario: destinatario,
+            fleteAsignadoBs: fleteTotal,
+            pagadoOrigenBs: pagadoOrigen,
+            porPagarDestinoBs: porPagarDestino,
+            saldoInicialCobrarBs: porPagarDestino,
+            cobrosRealizadosBs: 0,
+            tipoResponsableDestino: tipoResponsable,
+            descripcionCarga: detalleCarga
+          }
+        ]
+      };
+
+      mostrarToast('Guardando despacho en Google Sheets...');
+
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(res => {
+            mostrarToast('Despacho registrado con éxito en Google Sheets.');
+            document.getElementById('form-despacho').reset();
+            calcularTotalFlete();
+            switchTab('tablas');
+          })
+          .withFailureHandler(err => {
+            mostrarToast('Error al guardar: ' + err, true);
+          })
+          .crearDespacho(SpreadsheetApp.getActiveSpreadsheet(), payload);
+      }
+    }
+
+    function guardarCobranzaForm(e) {
+      e.preventDefault();
+      const idSub = document.getElementById('cobro-sub-id').value.trim();
+      const monto = parseFloat(document.getElementById('cobro-monto').value) || 0;
+      const caja = document.getElementById('cobro-caja').value;
+      const tipoResp = document.getElementById('cobro-tipo-responsable').value;
+      const recibo = document.getElementById('cobro-recibo').value.trim();
+
+      const payload = {
+        idSubManifiesto: idSub,
+        montoBs: monto,
+        cajaCuentaRecaudadora: caja,
+        tipoResponsable: tipoResp,
+        nroRecibo: recibo,
+        fecha: new Date().toISOString().split('T')[0]
+      };
+
+      mostrarToast('Registrando cobro...');
+
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(res => {
+            mostrarToast(res.message || 'Cobro registrado exitosamente.');
+            document.getElementById('form-cobro').reset();
+            switchTab('tablas');
+          })
+          .withFailureHandler(err => {
+            mostrarToast('Error: ' + err, true);
+          })
+          .registrarCobroManifiestoOfeDestino(SpreadsheetApp.getActiveSpreadsheet(), payload);
+      }
+    }
+
+    function cargarResumenTablas() {
+      const tbody = document.getElementById('tbody-tablas');
+      tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px;">Consultando Google Sheets...</td></tr>';
+
+      const renderData = (data) => {
+        const vCount = (data.viajes || []).length;
+        const moCount = (data.manifiestosOrigen || []).length;
+        const mdCount = (data.manifiestosDestino || []).length;
+        const txCount = (data.transacciones || []).length;
+
+        document.getElementById('count-viajes').innerText = vCount;
+        document.getElementById('count-origen').innerText = moCount;
+        document.getElementById('count-destino').innerText = mdCount;
+        document.getElementById('count-transacciones').innerText = txCount;
+
+        const tablas = [
+          { nombre: 'Viajes', filas: vCount, badge: 'badge-blue' },
+          { nombre: 'Manifiestos_Origen', filas: moCount, badge: 'badge-blue' },
+          { nombre: 'Manifiestos_Destino', filas: mdCount, badge: 'badge-amber' },
+          { nombre: 'Transacciones_Diarias', filas: txCount, badge: 'badge-green' },
+          { nombre: 'Gastos_Ruta_Camion', filas: (data.gastosRuta || []).length, badge: 'badge-red' },
+          { nombre: 'Arqueo_Cajas', filas: (data.cajas || []).length, badge: 'badge-green' },
+          { nombre: 'Proveedores', filas: (data.proveedores || []).length, badge: 'badge-blue' },
+          { nombre: 'Auditoria_Mantenimiento', filas: (data.auditoriaLogs || []).length, badge: 'badge-blue' }
+        ];
+
+        tbody.innerHTML = tablas.map(t => `
+          <tr>
+            <td><strong>${t.nombre}</strong></td>
+            <td class="tabular-nums">${t.filas}</td>
+            <td><span class="badge ${t.badge}">Sincronizado</span></td>
+            <td>
+              <button class="btn btn-secondary" style="width: auto; padding: 4px 10px; font-size: 11px;" onclick="switchTab('auditoria')">
+                Auditar
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      };
+
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(res => {
+            if (res && res.data) renderData(res.data);
+          })
+          .withFailureHandler(err => {
+            tbody.innerHTML = `<tr><td colspan="4" style="color: red; text-align: center;">Error al obtener datos: ${err}</td></tr>`;
+          })
+          .getAll();
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      cargarResumenTablas();
+    });
+  </script>
+</body>
+</html>
